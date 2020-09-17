@@ -14,11 +14,8 @@ public struct Parser {
 }
 
 extension Parser {
-    
-    /**
-     Parse any generic object using the parsing handler.
-     */
-    
+    /// Parse any generic object using the parsing handler.
+
     public static func serializer<T>(_ parsingHandler: (( _ data: Any? ) -> T?)?) -> DataResponseSerializer<T> {
         return DataResponseSerializer<T> { (request, response, data, error) -> Result<T> in
 
@@ -47,10 +44,9 @@ extension Parser {
         }
     }
 
-    /**
-     Typealias for unwrapping from a dictionary, to be used if your JSON response contains top level object(s)
-     That are not useful in parsing your actual model.
-     */
+    /// Typealias for unwrapping from a dictionary, to be used if your JSON response contains top level object(s)
+    /// that are not useful in parsing your actual model.
+
     public typealias Unwrapper = ((_ sourceDictionary: NSDictionary, _ expectedType:Any) -> Any?)
 }
 
@@ -59,15 +55,14 @@ extension Parser {
 
 public extension Alamofire.DataRequest
 {
-    /**
-     Adds a handler that attempts to parse the result of the request into a **Decodable**
-     
-     - parameter completionHandler:A closure that is invoked when the request is finished
-     
-     - parameter unwrapper: A closure that extracts the data to be parsed from the JSON response data.
+    /// Adds a handler that attempts to parse the result of the request into a **Decodable**
+    ///
+    /// - parameter completionHandler:A closure that is invoked when the request is finished
+    ///
+    /// - parameter unwrapper: A closure that extracts the data to be parsed from the JSON response data.
+    ///
+    /// - returns: The request
 
-     - returns: The request
-     */
     @discardableResult
     public func responseSerializable<T:Decodable>(_ completionHandler: @escaping (DataResponse<T>) -> Void,
                                      unwrapper: @escaping Parser.Unwrapper,
@@ -86,16 +81,14 @@ public extension Alamofire.DataRequest
         
         return validate().response(responseSerializer: serializer, completionHandler: completionHandler)
     }
-    
-    /**
-     Adds a handler that attempts to parse the result of the request into an array of **Decodable**
-     
-     - parameter completionHandler:A closure that is invoked when the request is finished
-     
-     - parameter unwrapper: A closure that extracts the data to be parsed from the JSON response data.
-     
-     - returns: The request
-     */
+
+    /// Adds a handler that attempts to parse the result of the request into an array of **Decodable**
+    ///
+    /// - parameter completionHandler:A closure that is invoked when the request is finished
+    ///
+    /// - parameter unwrapper: A closure that extracts the data to be parsed from the JSON response data.
+    ///
+    /// - returns: The request
 
 	@discardableResult
     public func responseSerializable<T:Decodable>(_ completionHandler: @escaping (DataResponse<[T]>) -> Void,
@@ -113,21 +106,18 @@ public extension Alamofire.DataRequest
         }
 
         return validate().response(responseSerializer: serializer, completionHandler: completionHandler)
-    }
-    
-    /**
-     Convenience method for a handler that does not need to parse the results of the network request.
-     
-     - parameter completionHandler:A closure that is invoked when the request is finished
-     
-     - returns: The request
-     */
+    }    
+
+    /// Convenience method for a handler that does not need to parse the results of the network request.
+    ///
+    /// - parameter completionHandler:A closure that is invoked when the request is finished
+    ///
+    /// - returns: The request
     
 	@discardableResult
     public func responseSerializable(_ completionHandler: @escaping (DataResponse<NilSerializable>) -> Void) -> Self {
         return validate().responseJSON(completionHandler: completionHandler)
-    }
-    
+    }    
 }
 // Convenience type for network requests with no response data
 public typealias NilSerializable = Any
